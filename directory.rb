@@ -1,6 +1,6 @@
 def print_header
   puts "The students of Villains Academy"
-  puts "-----------"
+  puts "----------------"
 end
 
 def print(students)
@@ -20,40 +20,60 @@ def print_footer(students)
 end
 
 def input_students
-  puts "Please enter the names of the students"
-  puts "To finish, just hit return twice"
-  # create an empty array
+  # Add elements to this list if more informations are required
+  students_data_fields = [
+    :name,
+    :cohort,
+    :age,
+    :city,
+    :hobbies
+  ]
+
+  # Create an empty list of students
   students = []
-  # get the first name
-  name = gets.chomp
-  # while the name is not empty, repeat this code
-  while !name.empty? do
-    # add the student hash to the array
-    students << {name: name, cohort: :november}
-    puts "Now we have #{students.count} students"
-    # get another name from the user
-    name = gets.chomp
+  
+  loop do
+    # Check if the user wants to add a student.
+    puts "Add a student to the list? (y/n)"
+    continue = gets.chomp
+    while !["y", "n"].include?(continue)
+      puts "Please answer 'y' or 'n'. Add a student to the list? (y/n)"
+      continue = gets.chomp
+    end
+    break if continue == "n"
+
+    # Create an empty student hash
+    student = Hash.new("N/A")
+    # Ask the user to fill information for each data_field
+    for element in students_data_fields
+      puts "Please enter the #{element.to_s} of the student"
+      input = gets.chomp
+      student[element] = input if input != ""
+    end
+
+    # Add student hash to the students list
+    students << student
   end
   # return the array of students
   students
 end
 
-#students = input_students
+students = input_students
 
-# # let's put all students into an array
-students = [
-{name: "Dr. Hannibal Lecter", cohort: :november},
-{name: "Darth Vader", cohort: :november},
-{name: "Nurse Ratched", cohort: :november},
-{name: "Michael Corleone", cohort: :november},
-{name: "Alex DeLarge", cohort: :november},
-{name: "The Wicked Witch of the West", cohort: :november},
-{name: "Terminator", cohort: :november},
-{name: "Freddy Krueger", cohort: :november},
-{name: "The Joker", cohort: :november},
-{name: "Joffrey Baratheon", cohort: :november},
-{name: "Norman Bates", cohort: :november}
-]
+# let's put all students into an array
+# students = [
+# {name: "Dr. Hannibal Lecter", cohort: :november},
+# {name: "Darth Vader", cohort: :november},
+# {name: "Nurse Ratched", cohort: :november},
+# {name: "Michael Corleone", cohort: :november},
+# {name: "Alex DeLarge", cohort: :november},
+# {name: "The Wicked Witch of the West", cohort: :november},
+# {name: "Terminator", cohort: :november},
+# {name: "Freddy Krueger", cohort: :november},
+# {name: "The Joker", cohort: :november},
+# {name: "Joffrey Baratheon", cohort: :november},
+# {name: "Norman Bates", cohort: :november}
+# ]
 
 # nothing happens until we call the methods
 print_header
