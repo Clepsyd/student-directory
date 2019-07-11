@@ -1,5 +1,14 @@
 @students = []
 
+# Add elements to this list if more informations are required
+@students_data_fields = [
+  :name,
+  :cohort,
+  :age,
+  :city,
+  :hobbies
+]
+
 def print_header
   puts "The students of Villains Academy"
   puts "----------------"
@@ -9,9 +18,7 @@ def print_students_list()
   count = 0
   while count < @students.length
     student = @students[count]
-    # if student[:name].start_with?("s", "S") && student[:name].size < 12
       puts "#{count + 1}. #{student[:name]} (#{student[:cohort]} cohort)".center(50)
-    # end
     count += 1
   end
   
@@ -25,38 +32,31 @@ def print_footer()
   end
 end
 
-def input_students
-  # Add elements to this list if more informations are required
-  students_data_fields = [
-    :name,
-    :cohort,
-    :age,
-    :city,
-    :hobbies
-  ]
-  
-  loop do
-    # Check if the user wants to add a student.
-    puts "Add a student to the list? (y/n)"
+def input_menu
+  puts "Add a student to the list? (y/n)"
+  continue = gets.chomp
+  while !["y", "n"].include?(continue)
+    puts "Please answer 'y' or 'n'. Add a student to the list? (y/n)"
     continue = gets.chomp
-    while !["y", "n"].include?(continue)
-      puts "Please answer 'y' or 'n'. Add a student to the list? (y/n)"
-      continue = gets.chomp
-    end
-    break if continue == "n"
+  end
+  return continue
+end
 
-    # Create an empty student hash
-    student = Hash.new("N/A")
-    # Ask the user to fill information for every data_field
-    for element in students_data_fields
-      puts "Please enter the #{element.to_s} of the student"
-      input = gets.chomp
-      if input != ""
-        student[element] = input
-      end
-    end
-    # Add student hash to the students list
-    @students << student
+def input_fields
+  student = Hash.new("N/A")
+  # Ask the user to fill information for every data_field
+  for element in @students_data_fields
+    puts "Please enter the #{element.to_s} of the student"
+    input = gets.chomp
+    student[element] = input if input != ""  
+  end
+  @students << student
+end
+
+def input_students
+  loop do
+    break if input_menu == "n"
+    input_fields
   end
 end
 
