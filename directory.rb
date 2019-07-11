@@ -5,7 +5,7 @@ def print_header
   puts "----------------"
 end
 
-def print()
+def print_students_list()
   count = 0
   while count < @students.length
     student = @students[count]
@@ -68,7 +68,7 @@ end
 
 def show_students
   print_header
-  print
+  print_students_list
   print_footer
 end
 
