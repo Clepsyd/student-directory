@@ -1,12 +1,14 @@
+@students = []
+
 def print_header
   puts "The students of Villains Academy"
   puts "----------------"
 end
 
-def print(students)
+def print()
   count = 0
-  while count < students.length
-    student = students[count]
+  while count < @students.length
+    student = @students[count]
     # if student[:name].start_with?("s", "S") && student[:name].size < 12
       puts "#{count + 1}. #{student[:name]} (#{student[:cohort]} cohort)".center(50)
     # end
@@ -15,11 +17,11 @@ def print(students)
   
 end
 
-def print_footer(students)
-  if students.count > 1
-    puts "Overall, we have #{students.count} great students"
+def print_footer()
+  if @students.count > 1
+    puts "Overall, we have #{@students.count} great students"
   else
-    puts "Overall, we have #{students.count} great student"
+    puts "Overall, we have #{@students.count} great student"
   end
 end
 
@@ -32,9 +34,6 @@ def input_students
     :city,
     :hobbies
   ]
-
-  # Create an empty list of students
-  students = []
   
   loop do
     # Check if the user wants to add a student.
@@ -48,23 +47,54 @@ def input_students
 
     # Create an empty student hash
     student = Hash.new("N/A")
-    # Ask the user to fill information for each data_field
+    # Ask the user to fill information for every data_field
     for element in students_data_fields
       puts "Please enter the #{element.to_s} of the student"
       input = gets.chomp
-      student[element] = input if input != ""
+      if input != ""
+        student[element] = input
+      end
     end
-
     # Add student hash to the students list
-    students << student
+    @students << student
   end
-  # return the array of students
-  students
 end
 
-students = input_students
+def print_menu
+  puts "1. Input the students"
+  puts "2. Show the students"
+  puts "9. Exit"
+end
 
-# let's put all students into an array
+def show_students
+  print_header
+  print
+  print_footer
+end
+
+def process(selection)
+  case selection
+  when "1"
+    input_students
+  when "2"
+    show_students
+  when "9"
+    exit
+  else
+    puts "I don't know what you meant, try again"
+  end
+end
+
+def interactive_menu
+  loop do
+    print_menu
+    process(gets.chomp)
+  end
+end
+
+#students = input_students
+
+## let's put all students into an array
 # students = [
 # {name: "Dr. Hannibal Lecter", cohort: :november},
 # {name: "Darth Vader", cohort: :november},
@@ -79,7 +109,4 @@ students = input_students
 # {name: "Norman Bates", cohort: :november}
 # ]
 
-# nothing happens until we call the methods
-print_header
-print(students)
-print_footer(students)
+interactive_menu
