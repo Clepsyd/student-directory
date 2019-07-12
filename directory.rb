@@ -35,10 +35,10 @@ end
 
 def input_menu
   puts "Add a student to the list? (y/n)"
-  continue = gets.chomp
+  continue = STDIN.gets.strip
   while !["y", "n"].include?(continue)
     puts "Please answer 'y' or 'n'. Add a student to the list? (y/n)"
-    continue = gets.strip
+    continue = STDIN.gets.strip
     puts ""
   end
   return continue
@@ -47,7 +47,7 @@ end
 def add_field(student)
   for element in @students_data_fields
     puts "Please enter the #{element.to_s} of the student"
-    input = gets.strip
+    input = STDIN.gets.strip
     puts ""
     if input != ""
       student[element] = element == :cohort ? input.downcase.to_sym : input
@@ -113,8 +113,8 @@ def save_students
   puts ""
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     student = Hash.new
     line.chomp.split(',').each_with_index { |val, index|
@@ -124,14 +124,24 @@ def load_students
     @students << student
   end
   file.close
-  puts "File loaded"
-  puts ""
+end
+
+def try_load_students
+  filename = ARGV.first ? ARGV.first : "students.csv"
+  if File.exists?(filename)
+    load_students(filename)
+    puts "Loaded #{@students.count} entries from #{filename}."
+    puts ""
+  else
+    puts "Sorry, #{filename} doesn't exist. Program shutting down."
+    exit
+  end
 end
 
 def interactive_menu
   loop do
     print_menu
-    input = gets.chomp
+    input = STDIN.gets.strip
     puts ""
     process(input)
   end
@@ -153,5 +163,6 @@ end
   # {name: "Joffrey Baratheon", cohort: :november},
   # {name: "Norman Bates", cohort: :november}
   # ]
-  
+
+try_load_students
 interactive_menu
