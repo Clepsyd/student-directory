@@ -11,6 +11,15 @@ require 'csv'
   :hobbies
 ]
 
+def print_menu
+  puts "1. Input the students"
+  puts "2. Show the students"
+  puts "3. Show a student's details"
+  puts "4. Save the list to a CSV file"
+  puts "5. Load the list from a CSV file"
+  puts "9. Exit"
+end
+
 def print_header
   puts "The students of Villains Academy"
   puts "----------------"
@@ -20,10 +29,9 @@ def print_students_list()
   count = 0
   while count < @students.length
     student = @students[count]
-    puts "#{count + 1}. #{student[:name]} (#{student[:cohort]} cohort)".center(50)
+    puts "* #{count + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
     count += 1
   end
-  
 end
 
 def print_footer()
@@ -32,6 +40,29 @@ def print_footer()
   else
     puts "Overall, we have #{@students.count} great student"
   end
+  puts ""
+end
+
+def show_students
+  print_header
+  print_students_list
+  print_footer
+end
+
+def show_one_student
+  puts "Whose details do you need to see?"
+  while true do
+    name = gets.strip
+    student = @students.select { |data| name == data[:name] }
+    if student.empty?
+      puts "Could not find this student, please try again:" 
+    else
+      break
+    end
+  end
+  student.first.each { |k, v|
+    puts "#{k}: #{v}"
+  }
   puts ""
 end
 
@@ -71,46 +102,17 @@ def input_students
   end
 end
 
-def print_menu
-  puts "1. Input the students"
-  puts "2. Show the students"
-  puts "3. Save the list to a CSV file"
-  puts "4. Load the list from a CSV file"
-  puts "9. Exit"
-end
-
-def show_students
-  print_header
-  print_students_list
-  print_footer
-end
-
-
 def save_students
-  file = ask_save_file
-  @students.each do |student|
-    student_data = []
-    @students_data_fields.each { |field| student_data << student[field] }
-    csv_line = student_data.join(",")
-    file.puts csv_line
+  puts "Please enter the name of your file (no extension - ex: .txt - required)"
+  filename = "#{STDIN.gets.strip}.csv"
+  
+  CSV.open(filename, "wb") do |file|
+    @students.each { |student|
+      file << student.values
+    }
   end
-  file.close
-  puts "List of students saved in #{filename}"
+  puts "#{@students.count} students saved in #{filename}"
   puts ""
-end
-
-def ask_save_file
-  puts "Type the name of the file you would like to save to (.csv):"
-  loop do
-    filename = STDIN.gets.strip
-    if filename.end_with? ".csv"
-      file = File.open(filename, "w")
-      break
-    else
-     puts "Sorry but a .csv file is require, pleas try again:"
-    end
-  end
-  return file
 end
 
 def load_students(filename = "students.csv")
@@ -123,9 +125,22 @@ def load_students(filename = "students.csv")
   puts ""
 end
 
+def menu_load
+  puts "Please enter the name of the file you want to load:"
+  loop do
+    file = STDIN.gets.strip
+    if File.exists?(file)
+      load_students(file)
+      break
+    else
+      puts "This file doesn't exist, please try again:"
+    end
+  end
+end
+
 def try_load_students
   filename = ARGV.first ? ARGV.first : "students.csv"
-  if File.exists?(filename)
+  if File.exist?(filename)
     load_students(filename)
     puts "Loaded #{@students.count} entries from #{filename}."
     puts ""
@@ -151,26 +166,15 @@ def process(selection)
   when "2"
     show_students
   when "3"
-    save_students
+    show_one_student
   when "4"
+    save_students
+  when "5"
     menu_load
   when "9"
     exit
   else
     puts "I don't know what you meant, try again"
-  end
-end
-
-def menu_load
-  puts "Please enter the name of the file you want to load:"
-  loop do
-    file = STDIN.gets.strip
-    if File.exists?(file)
-      load_students(file)
-      break
-    else
-      puts "This file doesn't exist, please try again:"
-    end
   end
 end
 
