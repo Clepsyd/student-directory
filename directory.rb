@@ -104,12 +104,11 @@ end
 
 def save_students
   puts "Please enter the name of your file (no extension - ex: .txt - required)"
+  puts "Leave empty and press 'Enter' to create/overwrite default save file."
   filename = "#{STDIN.gets.strip}.csv"
-  
+  filename = filename == ".csv" ? "students.csv" : filename
   CSV.open(filename, "wb") do |file|
-    @students.each { |student|
-      file << student.values
-    }
+    @students.each { |student| file << student.values }
   end
   puts "#{@students.count} students saved in #{filename}"
   puts ""
@@ -144,6 +143,9 @@ def try_load_students
     load_students(filename)
     puts "Loaded #{@students.count} entries from #{filename}."
     puts ""
+  elsif filename == "students.csv"
+    puts "No default file was found. Creating one now."
+    system("touch students.csv")
   else
     puts "Sorry, #{filename} doesn't exist. Program shutting down."
     exit
